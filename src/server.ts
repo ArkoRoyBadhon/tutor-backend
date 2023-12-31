@@ -14,3 +14,5 @@ async function main() {
     console.log('Failed to connect database', error)
   }
 }
+
+main()
