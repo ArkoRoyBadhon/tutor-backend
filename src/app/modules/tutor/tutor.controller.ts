@@ -3,6 +3,9 @@ import catchAsync from '../../../shared/catchAsync'
 import sendResponse from '../../../shared/sendResponse'
 import httpStatus from 'http-status'
 import { tutorService } from './tutor.service'
+import pick from '../../../shared/pick'
+import { tutorFilterOptions } from './tutor.constant'
+import { paginationFields } from '../../../constant/pagination'
 
 const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
   const result = await tutorService.insertIntoDB(req.body)
@@ -16,7 +19,10 @@ const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
 })
 
 const getAllServices = catchAsync(async (req: Request, res: Response) => {
-  const result = await tutorService.getAllServices()
+  const filters = pick(req.query, tutorFilterOptions)
+  const paginationOptions = pick(req.query, paginationFields)
+
+  const result = await tutorService.getAllServices(filters, paginationOptions)
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

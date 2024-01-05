@@ -12,3 +12,15 @@ export type ITutor = {
   experience: string
   address: string
 }
+
+export type IOption = {
+  searchTerm?: string | undefined
+  name?: string
+  email?: string
+  phoneNumber?: string
+  class?: string[]
+  gender?: string
+  subject?: string[]
+  education?: string[]
+  experience?: string
+}

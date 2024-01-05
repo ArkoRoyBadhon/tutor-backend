@@ -24,13 +24,13 @@ router.get(
 
 router.patch(
   '/update/:id',
-  // authPermission(ENUM_USER_ROLE.ADMIN),
+  authPermission('admin'),
   tutorController.updateService,
 )
 
 router.delete(
   '/delete/:id',
-  // authPermission(ENUM_USER_ROLE.ADMIN),
+  authPermission('admin'),
   tutorController.deleteService,
 )
 
