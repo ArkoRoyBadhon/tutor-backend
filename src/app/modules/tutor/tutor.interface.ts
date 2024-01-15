@@ -3,6 +3,7 @@
 export type ITutor = {
   // _id?: Types.ObjectId
   name: string
+  img: string
   email: string
   phoneNumber: string
   gender: string
@@ -11,6 +12,7 @@ export type ITutor = {
   education: string[]
   experience: string
   address: string
+  status: string
 }
 
 export type IOption = {

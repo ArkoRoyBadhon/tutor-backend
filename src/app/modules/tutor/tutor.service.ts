@@ -20,7 +20,7 @@ const getAllServices = async (
     sortOrder?: SortOrder | undefined
   },
 ): Promise<IGenericResponse<ITutor[]> | null> => {
-  // console.log('aa', options)
+  // console.log('aa', )
   const andConditions: string | any[] = []
   const { searchTerm, ...filtersData } = filters
   const tutorSearchableFields = [
@@ -65,7 +65,10 @@ const getAllServices = async (
     const whereConditions =
       andConditions.length > 0 ? { $and: andConditions } : {}
 
-    const result = await Tutor.find(whereConditions).sort(sortConditions)
+    const result = await Tutor.find(whereConditions)
+      .sort(sortConditions)
+      .skip(skip)
+      .limit(limit)
     const count = await Tutor.find({}).countDocuments()
 
     return {
@@ -83,6 +86,41 @@ const getAllServices = async (
   }
 }
 
+const getAvailableService = async (): Promise<Partial<ITutor[]> | null> => {
+  try {
+    const result = await Tutor.aggregate([{ $sample: { size: 4 } }])
+
+    if (result.length === 0) {
+      console.warn('No documents found.')
+      return null
+    }
+
+    return result
+  } catch (error) {
+    console.error('Error occurred:', error)
+    return null
+  }
+}
+
+const getUpcomingService = async (): Promise<Partial<ITutor[]> | null> => {
+  try {
+    const result = await Tutor.aggregate([
+      { $match: { status: 'upcoming' } },
+      { $sample: { size: 4 } },
+    ])
+
+    if (result.length === 0) {
+      console.warn('No documents found.')
+      return null
+    }
+
+    return result
+  } catch (error) {
+    console.error('Error occurred:', error)
+    return null
+  }
+}
+
 const getSingleService = async (
   id: string,
 ): Promise<Partial<ITutor> | null> => {
@@ -95,18 +133,6 @@ const getSingleService = async (
     return null
   }
 }
-
-// const getReviewsByService = async (
-//   id: string,
-// ): Promise<Partial<ITutor> | null> => {
-//   const result = await Tutor.findById({
-//     where: {
-//       id,
-//     },
-//   })
-
-//   return result
-// }
 
 const updateService = async (
   id: string,
@@ -130,6 +156,8 @@ const deleteService = async (id: string) => {
 export const tutorService = {
   insertIntoDB,
   getAllServices,
+  getAvailableService,
+  getUpcomingService,
   getSingleService,
   // getReviewsByService,
   updateService, // pricing, descriptions and availability

@@ -19,8 +19,14 @@ const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
 })
 
 const getAllServices = catchAsync(async (req: Request, res: Response) => {
+  console.log('query', req.query)
+  console.log('params', req.params)
+
   const filters = pick(req.query, tutorFilterOptions)
   const paginationOptions = pick(req.query, paginationFields)
+
+  console.log('filters', filters)
+  console.log('pagination', paginationOptions)
 
   const result = await tutorService.getAllServices(filters, paginationOptions)
 
@@ -28,6 +34,28 @@ const getAllServices = catchAsync(async (req: Request, res: Response) => {
     statusCode: httpStatus.OK,
     success: true,
     message: 'User retrieved successfully!',
+    data: result,
+  })
+})
+
+const getAvailableService = catchAsync(async (req: Request, res: Response) => {
+  const result = await tutorService.getAvailableService()
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User retrieved successfully!',
+    data: result,
+  })
+})
+
+const getUpcomingService = catchAsync(async (req: Request, res: Response) => {
+  const result = await tutorService.getUpcomingService()
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Data retrieved successfully!',
     data: result,
   })
 })
@@ -88,6 +116,8 @@ const deleteService = catchAsync(async (req: Request, res: Response) => {
 export const tutorController = {
   insertIntoDB,
   getAllServices,
+  getAvailableService,
+  getUpcomingService,
   getSingleService,
   //   getReviewsByService,
   updateService,

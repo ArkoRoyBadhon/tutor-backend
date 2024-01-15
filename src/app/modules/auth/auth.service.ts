@@ -46,7 +46,7 @@ const loginUser = async (payload: ILoginUser): Promise<ILoginUserResponse> => {
 
   // create access token & refresh token
   const { _id: Id } = isUserExist
-  const role = 'user'
+  const role = isUserExist?.role || 'user'
   const accessToken = jwtHelpers.createToken(
     { Id, role },
     config.jwt.secret as Secret,
@@ -85,8 +85,15 @@ const getLoggedUser = async (token: string) => {
   return result
 }
 
+const getAllUser = async () => {
+  const result = await User.find({})
+
+  return result
+}
+
 export const UserService = {
   createUser,
   loginUser,
   getLoggedUser,
+  getAllUser,
 }

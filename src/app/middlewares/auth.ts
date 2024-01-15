@@ -11,6 +11,8 @@ const authPermission = (...requiredRoles: string[]) => {
       const ff = req.cookies
       // const token = req.headers.authorization
       const token = ff.accessToken
+      console.log('roleee', requiredRoles)
+
       console.log('cookies', token)
 
       if (!token) {
@@ -22,6 +24,8 @@ const authPermission = (...requiredRoles: string[]) => {
       verifiedUser = jwtHelpers.verifyToken(token, config.jwt.secret as Secret)
 
       req.user = verifiedUser
+
+      console.log('AAA', verifiedUser.role)
 
       if (requiredRoles.length && !requiredRoles.includes(verifiedUser.role)) {
         throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden')

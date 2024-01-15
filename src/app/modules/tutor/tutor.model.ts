@@ -43,6 +43,11 @@ const TutorSchema = new Schema<ITutor>(
       type: String,
       required: true,
     },
+    status: {
+      type: String,
+      // required: true,
+      default: 'available',
+    },
   },
   {
     timestamps: true,

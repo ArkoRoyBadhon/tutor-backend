@@ -17,6 +17,18 @@ router.get(
 )
 
 router.get(
+  '/get-available',
+  // authPermission(ENUM_USER_ROLE.ADMIN),
+  tutorController.getAvailableService,
+)
+
+router.get(
+  '/get-upcoming',
+  // authPermission(ENUM_USER_ROLE.ADMIN),
+  tutorController.getUpcomingService,
+)
+
+router.get(
   '/get/:id',
   // authPermission(ENUM_USER_ROLE.ADMIN),
   tutorController.getSingleService,

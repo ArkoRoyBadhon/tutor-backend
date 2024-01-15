@@ -4,9 +4,16 @@ import sendResponse from '../../../shared/sendResponse'
 import { Request, Response } from 'express'
 import { UserService } from './auth.service'
 import config from '../../../config'
+import ApiError from '../../../errors/ApiError'
 
 const createUser = catchAsync(async (req: Request, res: Response) => {
-  const { ...userData } = req.body
+  const { confirmPassword, ...userData } = req.body
+
+  console.log(userData)
+
+  if (userData?.password !== confirmPassword) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, 'password not matched')
+  }
 
   const result = await UserService.createUser(userData)
 
@@ -25,7 +32,7 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
   const result = await UserService.loginUser(loginData)
   const { refreshToken, accessToken, ...others } = result
 
-  // console.log(result)
+  console.log(result)
 
   const cookieOptions = {
     secure: config.env === 'development',
@@ -69,7 +76,22 @@ const getUser = catchAsync(async (req: Request, res: Response) => {
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'User Created Successfully',
+      message: 'User Get Successfully',
+      data: result,
+    })
+  }
+})
+
+const getAllUser = catchAsync(async (req: Request, res: Response) => {
+  const authorizationHeader = req.cookies.accessToken
+
+  if (typeof authorizationHeader === 'string') {
+    const token = authorizationHeader.split(' ')[1] || authorizationHeader
+    const result = await UserService.getAllUser(token)
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'User Get Successfully',
       data: result,
     })
   }
@@ -80,4 +102,5 @@ export const UserController = {
   loginUser,
   LogOut,
   getUser,
+  getAllUser,
 }
