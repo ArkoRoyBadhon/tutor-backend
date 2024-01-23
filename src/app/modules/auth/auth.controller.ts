@@ -25,6 +25,19 @@ const createUser = catchAsync(async (req: Request, res: Response) => {
   })
 })
 
+const updateUser = catchAsync(async (req: Request, res: Response) => {
+  const { id, ...userData } = req.body
+
+  const result = await UserService.updateUser(id, userData)
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User updated Successfully',
+    data: result,
+  })
+})
+
 const loginUser = catchAsync(async (req: Request, res: Response) => {
   const { ...loginData } = req.body
   // console.log(loginData)
@@ -97,10 +110,30 @@ const getAllUser = catchAsync(async (req: Request, res: Response) => {
   }
 })
 
+const deleteUser = catchAsync(async (req: Request, res: Response) => {
+  const authorizationHeader = req.cookies.accessToken
+  const { id } = req.body
+
+  console.log('delete id', id)
+
+  if (typeof authorizationHeader === 'string') {
+    const token = authorizationHeader.split(' ')[1] || authorizationHeader
+    const result = await UserService.deleteUser(id, token)
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'User deleted Successfully',
+      data: result,
+    })
+  }
+})
+
 export const UserController = {
   createUser,
+  updateUser,
   loginUser,
   LogOut,
   getUser,
   getAllUser,
+  deleteUser,
 }

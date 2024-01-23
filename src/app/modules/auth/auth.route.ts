@@ -11,4 +11,11 @@ router.get('/user', authPermission('user', 'admin'), UserController.getUser)
 router.post('/logout', UserController.LogOut)
 router.get('/get-all-user', authPermission('admin'), UserController.getAllUser)
 
+router.patch('/update-user', UserController.updateUser)
+router.delete(
+  '/delete-user',
+  authPermission('admin'),
+  UserController.deleteUser,
+)
+
 export const UserRoutes = router

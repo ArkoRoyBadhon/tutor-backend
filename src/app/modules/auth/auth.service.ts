@@ -85,9 +85,44 @@ const getLoggedUser = async (token: string) => {
   return result
 }
 
-const getAllUser = async () => {
+const getAllUser = async (token: string) => {
+  console.log(token)
   const result = await User.find({})
+  return result
+}
 
+const updateUser = async (
+  id: string,
+  payload: IUser,
+): Promise<IUser | null> => {
+  const existingUser = await User.findOne({
+    _id: id,
+  })
+
+  if (!existingUser) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, 'No User exists')
+  }
+
+  // const info = { ...payload, role: 'user' }
+  //   console.log('info', info)
+
+  const result = await User.findByIdAndUpdate(id, payload, { new: true })
+  return result
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const deleteUser = async (id: string, token: string) => {
+  console.log('service', id)
+
+  const existingUser = await User.findOne({
+    _id: id,
+  })
+
+  if (!existingUser) {
+    throw new ApiError(httpStatus.NOT_ACCEPTABLE, 'No User exists')
+  }
+
+  const result = await User.findByIdAndDelete(id)
   return result
 }
 
@@ -96,4 +131,6 @@ export const UserService = {
   loginUser,
   getLoggedUser,
   getAllUser,
+  updateUser,
+  deleteUser,
 }
